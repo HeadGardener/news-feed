@@ -17,15 +17,27 @@ type ArticleService interface {
 	GetAll(ctx context.Context, page int) ([]models.Article, error)
 }
 
+type UserService interface {
+	Create(ctx context.Context, userInput models.UserInput) (int, error)
+}
+
+type TokenService interface {
+	GenerateToken(ctx context.Context, userInput models.UserInput) (string, error)
+}
+
 type Handler struct {
 	sourceService  SourceService
 	articleService ArticleService
+	userService    UserService
+	tokenService   TokenService
 }
 
-func NewHandler(sourceService SourceService, articleService ArticleService) *Handler {
+func NewHandler(srcSvc SourceService, artSvc ArticleService, uSvc UserService, tknSvc TokenService) *Handler {
 	return &Handler{
-		sourceService:  sourceService,
-		articleService: articleService,
+		sourceService:  srcSvc,
+		articleService: artSvc,
+		userService:    uSvc,
+		tokenService:   tknSvc,
 	}
 }
 
@@ -45,6 +57,11 @@ func (h *Handler) InitRoutes() http.Handler {
 
 		r.Route("/articles", func(r chi.Router) {
 			r.Get("/", h.articles)
+		})
+
+		r.Route("/users", func(r chi.Router) {
+			r.Post("/sign-up", h.signUp)
+			r.Post("/sign-in", h.signIn)
 		})
 	})
 

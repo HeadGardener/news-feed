@@ -7,9 +7,17 @@ import (
 )
 
 type Config struct {
-	DBName     string
-	Host       string
-	SSLMode    string
+	DBConfig     DBConfig
+	ServerConfig ServerConfig
+}
+
+type DBConfig struct {
+	DBName  string
+	Host    string
+	SSLMode string
+}
+
+type ServerConfig struct {
 	ServerPort string
 }
 
@@ -20,34 +28,38 @@ func MustInit(path string) *Config {
 		return nil
 	}
 
-	dbname := os.Getenv("dbname")
+	dbname := os.Getenv("DBNAME")
 	if dbname == "" {
 		log.Fatalf("[FATAL] db name is empty")
 		return nil
 	}
 
-	host := os.Getenv("dbhost")
+	host := os.Getenv("DBHOST")
 	if host == "" {
 		log.Fatalf("[FATAL] db host is empty")
 		return nil
 	}
 
-	sslmode := os.Getenv("sslmode")
+	sslmode := os.Getenv("SSLMODE")
 	if sslmode == "" {
 		log.Fatalf("[FATAL] sslmode is empty")
 		return nil
 	}
 
-	srvport := os.Getenv("server_port")
+	srvport := os.Getenv("SERVER_PORT")
 	if srvport == "" {
-		log.Fatalf("[FATAL] server_port is empty")
+		log.Fatalf("[FATAL] server port is empty")
 		return nil
 	}
 
 	return &Config{
-		DBName:     dbname,
-		Host:       host,
-		SSLMode:    sslmode,
-		ServerPort: srvport,
+		DBConfig: DBConfig{
+			DBName:  dbname,
+			Host:    host,
+			SSLMode: sslmode,
+		},
+		ServerConfig: ServerConfig{
+			ServerPort: srvport,
+		},
 	}
 }

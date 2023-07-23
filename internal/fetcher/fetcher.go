@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-const fetchInterval = time.Minute
+const fetchInterval = 15 * time.Minute
 
 var categories = []string{"go", "golang"}
 
@@ -80,7 +80,7 @@ func (f *Fetcher) Fetch(ctx context.Context) error {
 			}
 
 			if err := f.handleItems(ctx, items, source); err != nil {
-				log.Printf("[ERROR] failed while handling items items: %e", err)
+				log.Printf("[ERROR] failed while handling items: %e", err)
 				return
 			}
 			wg.Done()
