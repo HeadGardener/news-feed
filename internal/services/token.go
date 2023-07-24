@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"errors"
 	"github.com/HeadGardener/news-feed/internal/models"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/joho/godotenv"
@@ -57,6 +58,30 @@ func (s *TokenService) GenerateToken(ctx context.Context, userInput models.UserI
 	})
 
 	return token.SignedString([]byte(secretKey))
+}
+
+func (s *TokenService) ParseToken(accessToken string) (models.UserAttributes, error) {
+	token, err := jwt.ParseWithClaims(accessToken, &tokenClaims{}, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, errors.New("invalid signing method")
+		}
+
+		return []byte(secretKey), nil
+	})
+
+	if err != nil {
+		return models.UserAttributes{}, err
+	}
+
+	claims, ok := token.Claims.(*tokenClaims)
+	if !ok {
+		return models.UserAttributes{}, errors.New("token claims are not of type *tokenClaims")
+	}
+
+	return models.UserAttributes{
+		ID:    claims.UserID,
+		Email: claims.Email,
+	}, nil
 }
 
 func initVars() {

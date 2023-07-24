@@ -8,7 +8,7 @@ CREATE TABLE users
     password_hash varchar(255) not null,
     send_flag     int          not null default 1,
     last_online   timestamp    not null default now()
-)
+);
 -- +goose StatementEnd
 
 -- +goose Down

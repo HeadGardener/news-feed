@@ -26,6 +26,11 @@ type UserInput struct {
 	Password string `json:"password"`
 }
 
+type UserAttributes struct {
+	ID    int    `json:"id"`
+	Email string `json:"name"`
+}
+
 func (u *UserInput) Validate() error {
 	if !checkEmail.MatchString(u.Email) {
 		return errors.New("invalid email (only gmail available)")

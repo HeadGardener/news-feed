@@ -23,6 +23,7 @@ type UserService interface {
 
 type TokenService interface {
 	GenerateToken(ctx context.Context, userInput models.UserInput) (string, error)
+	ParseToken(accessToken string) (models.UserAttributes, error)
 }
 
 type Handler struct {
@@ -62,6 +63,10 @@ func (h *Handler) InitRoutes() http.Handler {
 		r.Route("/users", func(r chi.Router) {
 			r.Post("/sign-up", h.signUp)
 			r.Post("/sign-in", h.signIn)
+		})
+
+		r.Route("/favorites", func(r chi.Router) {
+			r.Use(h.identifyUser)
 		})
 	})
 
