@@ -1,6 +1,6 @@
 -- +goose Up
 -- +goose StatementBegin
-CREATE TABLE users_articles
+CREATE TABLE favorites
 (
     id         serial primary key,
     user_id    int references users (id) on delete cascade    not null,
@@ -10,5 +10,5 @@ CREATE TABLE users_articles
 
 -- +goose Down
 -- +goose StatementBegin
-DROP TABLE users_articles;
+DROP TABLE favorites;
 -- +goose StatementEnd

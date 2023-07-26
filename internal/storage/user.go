@@ -36,7 +36,7 @@ func (s *UserStorage) Users(ctx context.Context) ([]models.User, error) {
 	return users, nil
 }
 
-func (s *UserStorage) GetUserByInput(ctx context.Context, userInput models.UserInput) (models.User, error) {
+func (s *UserStorage) UserByInput(ctx context.Context, userInput models.UserInput) (models.User, error) {
 	var user models.User
 
 	fmt.Println(userInput)

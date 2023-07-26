@@ -8,15 +8,15 @@ import (
 	"time"
 )
 
-type UserProcessor interface {
+type UserProvider interface {
 	Create(ctx context.Context, user models.User) (int, error)
 }
 
 type UserService struct {
-	userProcessor UserProcessor
+	userProcessor UserProvider
 }
 
-func NewUserService(userProcessor UserProcessor) *UserService {
+func NewUserService(userProcessor UserProvider) *UserService {
 	return &UserService{userProcessor: userProcessor}
 }
 

@@ -38,3 +38,13 @@ func (s *ArticleStorage) Articles(ctx context.Context, page int) ([]models.Artic
 
 	return articles, nil
 }
+
+func (s *ArticleStorage) ArticleByID(ctx context.Context, articleID int) (models.Article, error) {
+	var article models.Article
+
+	if err := s.db.GetContext(ctx, &article, getArticleByIDQuery, articleID); err != nil {
+		return models.Article{}, err
+	}
+
+	return article, nil
+}

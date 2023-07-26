@@ -20,7 +20,7 @@ var (
 )
 
 type UserGetter interface {
-	GetUserByInput(ctx context.Context, userInput models.UserInput) (models.User, error)
+	UserByInput(ctx context.Context, userInput models.UserInput) (models.User, error)
 }
 
 type TokenService struct {
@@ -43,7 +43,7 @@ type tokenClaims struct {
 func (s *TokenService) GenerateToken(ctx context.Context, userInput models.UserInput) (string, error) {
 	userInput.Password = getPasswordHash(userInput.Password)
 
-	user, err := s.userGetter.GetUserByInput(ctx, userInput)
+	user, err := s.userGetter.UserByInput(ctx, userInput)
 	if err != nil {
 		return "", err
 	}

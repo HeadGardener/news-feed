@@ -26,19 +26,31 @@ type TokenService interface {
 	ParseToken(accessToken string) (models.UserAttributes, error)
 }
 
-type Handler struct {
-	sourceService  SourceService
-	articleService ArticleService
-	userService    UserService
-	tokenService   TokenService
+type FavoritesService interface {
+	Add(ctx context.Context, userID, articleID int) error
+	GetAll(ctx context.Context, userID int) ([]models.Article, error)
+	Delete(ctx context.Context, userID, articleID int) error
 }
 
-func NewHandler(srcSvc SourceService, artSvc ArticleService, uSvc UserService, tknSvc TokenService) *Handler {
+type Handler struct {
+	sourceService    SourceService
+	articleService   ArticleService
+	userService      UserService
+	tokenService     TokenService
+	favoritesService FavoritesService
+}
+
+func NewHandler(sourceService SourceService,
+	articleService ArticleService,
+	userService UserService,
+	tokenService TokenService,
+	favoritesService FavoritesService) *Handler {
 	return &Handler{
-		sourceService:  srcSvc,
-		articleService: artSvc,
-		userService:    uSvc,
-		tokenService:   tknSvc,
+		sourceService:    sourceService,
+		articleService:   articleService,
+		userService:      userService,
+		tokenService:     tokenService,
+		favoritesService: favoritesService,
 	}
 }
 
@@ -67,6 +79,9 @@ func (h *Handler) InitRoutes() http.Handler {
 
 		r.Route("/favorites", func(r chi.Router) {
 			r.Use(h.identifyUser)
+			r.Post("/{article_id}", h.addToFavorites)
+			r.Get("/", h.getFavorites)
+			r.Delete("/{article_id}", h.deleteFromFavorites)
 		})
 	})
 

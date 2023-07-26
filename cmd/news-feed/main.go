@@ -31,21 +31,23 @@ func main() {
 	}
 
 	var (
-		sourceStorage  = storage.NewSourceStorage(db)
-		articleStorage = storage.NewArticleStorage(db)
-		userStorage    = storage.NewUserStorage(db)
+		sourceStorage    = storage.NewSourceStorage(db)
+		articleStorage   = storage.NewArticleStorage(db)
+		userStorage      = storage.NewUserStorage(db)
+		favoritesStorage = storage.NewFavoritesStorage(db)
 	)
 
 	var (
-		sourceService  = services.NewSourceService(sourceStorage)
-		articleService = services.NewArticleService(articleStorage)
-		userService    = services.NewUserService(userStorage)
-		tokenService   = services.NewTokenService(userStorage)
-		fetcher        = fetcher.NewFetcher(sourceStorage, articleStorage)
-		sender         = sender.NewSender(userStorage)
+		sourceService    = services.NewSourceService(sourceStorage)
+		articleService   = services.NewArticleService(articleStorage)
+		userService      = services.NewUserService(userStorage)
+		tokenService     = services.NewTokenService(userStorage)
+		favoritesService = services.NewFavoritesService(favoritesStorage, articleStorage)
+		fetcher          = fetcher.NewFetcher(sourceStorage, articleStorage)
+		sender           = sender.NewSender(userStorage)
 	)
 
-	handler := handlers.NewHandler(sourceService, articleService, userService, tokenService)
+	handler := handlers.NewHandler(sourceService, articleService, userService, tokenService, favoritesService)
 
 	srv := &server.Server{}
 	go func() {
