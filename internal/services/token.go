@@ -38,6 +38,7 @@ type tokenClaims struct {
 	jwt.RegisteredClaims
 	UserID int    `json:"id"`
 	Email  string `json:"email"`
+	Role   string `json:"role"`
 }
 
 func (s *TokenService) GenerateToken(ctx context.Context, userInput models.UserInput) (string, error) {
@@ -55,6 +56,7 @@ func (s *TokenService) GenerateToken(ctx context.Context, userInput models.UserI
 		},
 		user.ID,
 		user.Email,
+		user.Role,
 	})
 
 	return token.SignedString([]byte(secretKey))

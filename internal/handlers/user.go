@@ -53,3 +53,7 @@ func (h *Handler) signIn(w http.ResponseWriter, r *http.Request) {
 		"token": token,
 	})
 }
+
+func (h *Handler) updateSendFlag(w http.ResponseWriter, r *http.Request) {
+
+}

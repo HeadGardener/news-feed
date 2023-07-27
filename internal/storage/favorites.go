@@ -24,7 +24,7 @@ func (s *FavoritesStorage) Add(ctx context.Context, userID, articleID int) error
 func (s *FavoritesStorage) ArticlesByUserID(ctx context.Context, userID int) ([]int, error) {
 	var articlesIDs []int
 
-	if err := s.db.SelectContext(ctx, &articlesIDs, getArticlesByUserID, userID); err != nil {
+	if err := s.db.SelectContext(ctx, &articlesIDs, getArticlesByUserIDQuery, userID); err != nil {
 		return nil, err
 	}
 

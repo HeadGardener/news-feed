@@ -19,6 +19,7 @@ type ArticleService interface {
 
 type UserService interface {
 	Create(ctx context.Context, userInput models.UserInput) (int, error)
+	UpdateSendFlag(ctx context.Context, userID, sendFlag int) error
 }
 
 type TokenService interface {
@@ -63,8 +64,10 @@ func (h *Handler) InitRoutes() http.Handler {
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.Timeout(60 * time.Second))
 
+	// add admin role and other endpoints
 	r.Route("/api", func(r chi.Router) {
 		r.Route("/sources", func(r chi.Router) {
+			r.Use(h.checkRole)
 			r.Post("/", h.addSource)
 		})
 
@@ -75,6 +78,10 @@ func (h *Handler) InitRoutes() http.Handler {
 		r.Route("/users", func(r chi.Router) {
 			r.Post("/sign-up", h.signUp)
 			r.Post("/sign-in", h.signIn)
+			r.Route("/profile", func(r chi.Router) {
+				r.Use(h.identifyUser)
+				r.Post("/{send_flag}", h.updateSendFlag)
+			})
 		})
 
 		r.Route("/favorites", func(r chi.Router) {

@@ -2,7 +2,6 @@ package storage
 
 import (
 	"context"
-	"fmt"
 	"github.com/HeadGardener/news-feed/internal/models"
 	"github.com/jmoiron/sqlx"
 )
@@ -39,11 +38,18 @@ func (s *UserStorage) Users(ctx context.Context) ([]models.User, error) {
 func (s *UserStorage) UserByInput(ctx context.Context, userInput models.UserInput) (models.User, error) {
 	var user models.User
 
-	fmt.Println(userInput)
-	err := s.db.GetContext(ctx, &user, getUserWithInput, userInput.Username, userInput.Email, userInput.Password)
+	err := s.db.GetContext(ctx, &user, getUserWithInputQuery, userInput.Username, userInput.Email, userInput.Password)
 	if err != nil {
 		return models.User{}, err
 	}
 
 	return user, nil
+}
+
+func (s *UserStorage) UpdateSendFlag(ctx context.Context, userID, sendFlag int) error {
+	if _, err := s.db.ExecContext(ctx, updateSendFlagQuery, sendFlag, userID); err != nil {
+		return err
+	}
+
+	return nil
 }

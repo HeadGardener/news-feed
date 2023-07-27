@@ -8,15 +8,16 @@ import (
 	"time"
 )
 
-type UserProvider interface {
+type UserProcessor interface {
 	Create(ctx context.Context, user models.User) (int, error)
+	UpdateSendFlag(ctx context.Context, userID, sendFlag int) error
 }
 
 type UserService struct {
-	userProcessor UserProvider
+	userProcessor UserProcessor
 }
 
-func NewUserService(userProcessor UserProvider) *UserService {
+func NewUserService(userProcessor UserProcessor) *UserService {
 	return &UserService{userProcessor: userProcessor}
 }
 
@@ -25,11 +26,16 @@ func (s *UserService) Create(ctx context.Context, userInput models.UserInput) (i
 		Username:     userInput.Username,
 		Email:        userInput.Email,
 		PasswordHash: getPasswordHash(userInput.Password),
+		Role:         "user",
 		SendFlag:     1,
 		LastOnline:   time.Now(),
 	}
 
 	return s.userProcessor.Create(ctx, user)
+}
+
+func (s *UserService) UpdateSendFlag(ctx context.Context, userID, sendFlag int) error {
+	return s.UpdateSendFlag(ctx, userID, sendFlag)
 }
 
 func getPasswordHash(password string) string {

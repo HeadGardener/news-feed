@@ -6,6 +6,7 @@ CREATE TABLE users
     username      varchar(255) not null,
     email         varchar(255) not null unique,
     password_hash varchar(255) not null,
+    role          varchar(255) not null default 'user',
     send_flag     int          not null default 1,
     last_online   timestamp    not null default now()
 );

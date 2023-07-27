@@ -16,6 +16,7 @@ type User struct {
 	Username     string    `db:"username"`
 	Email        string    `db:"email"`
 	PasswordHash string    `db:"password_hash"`
+	Role         string    `db:"role"`
 	SendFlag     int       `db:"send_flag"`
 	LastOnline   time.Time `db:"last_online"`
 }
@@ -29,6 +30,7 @@ type UserInput struct {
 type UserAttributes struct {
 	ID    int    `json:"id"`
 	Email string `json:"name"`
+	Role  string `json:"role"`
 }
 
 func (u *UserInput) Validate() error {

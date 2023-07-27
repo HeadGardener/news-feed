@@ -53,6 +53,26 @@ func (h *Handler) identifyUser(next http.Handler) http.Handler {
 	})
 }
 
+func (h *Handler) checkRole(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		userCtxValue := r.Context().Value(userCtx)
+		userAttributes, ok := userCtxValue.(models.UserAttributes)
+		if !ok {
+			newErrResponse(w, http.StatusBadRequest, "failed while parsing request context",
+				errors.New("workerCtx value is not of type WorkerAttributes"))
+			return
+		}
+
+		if userAttributes.Role != "admin" {
+			newErrResponse(w, http.StatusForbidden, "failed while checking role",
+				errors.New("you don't have enough rules"))
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	})
+}
+
 func getUserID(r *http.Request) (int, error) {
 	userCtxValue := r.Context().Value(userCtx)
 	userAttributes, ok := userCtxValue.(models.UserAttributes)
