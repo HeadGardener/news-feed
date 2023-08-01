@@ -3,7 +3,9 @@ package handlers
 import (
 	"encoding/json"
 	"github.com/HeadGardener/news-feed/internal/models"
+	"github.com/go-chi/chi/v5"
 	"net/http"
+	"strconv"
 )
 
 func (h *Handler) signUp(w http.ResponseWriter, r *http.Request) {
@@ -55,5 +57,24 @@ func (h *Handler) signIn(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) updateSendFlag(w http.ResponseWriter, r *http.Request) {
+	userID, err := getUserID(r)
+	if err != nil {
+		newErrResponse(w, http.StatusBadRequest, "failed while getting userID", err)
+		return
+	}
 
+	sendFlag, err := strconv.Atoi(chi.URLParam(r, "send_flag"))
+	if err != nil {
+		newErrResponse(w, http.StatusBadRequest, "invalid send_flag param", err)
+		return
+	}
+
+	if err := h.userService.UpdateSendFlag(r.Context(), userID, sendFlag); err != nil {
+		newErrResponse(w, http.StatusInternalServerError, "failed while updating send_flag", err)
+		return
+	}
+
+	newResponse(w, http.StatusOK, map[string]string{
+		"status": "updated",
+	})
 }

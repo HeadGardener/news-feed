@@ -83,6 +83,7 @@ func (s *TokenService) ParseToken(accessToken string) (models.UserAttributes, er
 	return models.UserAttributes{
 		ID:    claims.UserID,
 		Email: claims.Email,
+		Role:  claims.Role,
 	}, nil
 }
 

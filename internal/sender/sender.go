@@ -2,7 +2,6 @@ package sender
 
 import (
 	"context"
-	"fmt"
 	"github.com/HeadGardener/news-feed/internal/lib/email"
 	"github.com/HeadGardener/news-feed/internal/models"
 	"log"
@@ -60,10 +59,11 @@ func (s *Sender) Process(ctx context.Context) error {
 		wg.Add(1)
 
 		go func(u models.User) {
+			if u.SendFlag == 0 {
+				return
+			}
+
 			ulo := u.LastOnline.Add(72 * time.Hour)
-			fmt.Println(ulo)
-			fmt.Println(time.Now().Add(3 * time.Hour).UTC())
-			fmt.Println(ulo.Before(time.Now().Add(3 * time.Hour).UTC()))
 			if ulo.Before(time.Now().Add(3 * time.Hour).UTC()) {
 				return
 			}

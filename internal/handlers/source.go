@@ -3,7 +3,9 @@ package handlers
 import (
 	"encoding/json"
 	"github.com/HeadGardener/news-feed/internal/models"
+	"github.com/go-chi/chi/v5"
 	"net/http"
+	"strconv"
 )
 
 func (h *Handler) addSource(w http.ResponseWriter, r *http.Request) {
@@ -27,5 +29,22 @@ func (h *Handler) addSource(w http.ResponseWriter, r *http.Request) {
 
 	newResponse(w, http.StatusCreated, map[string]interface{}{
 		"id": id,
+	})
+}
+
+func (h *Handler) deleteSource(w http.ResponseWriter, r *http.Request) {
+	sourceID, err := strconv.Atoi(chi.URLParam(r, "source_id"))
+	if err != nil {
+		newErrResponse(w, http.StatusBadRequest, "invalid source_id param", err)
+		return
+	}
+
+	if err := h.sourceService.Delete(r.Context(), sourceID); err != nil {
+		newErrResponse(w, http.StatusInternalServerError, "failed while deleting source", err)
+		return
+	}
+
+	newResponse(w, http.StatusOK, map[string]string{
+		"status": "deleted",
 	})
 }

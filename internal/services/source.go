@@ -5,16 +5,17 @@ import (
 	"github.com/HeadGardener/news-feed/internal/models"
 )
 
-type SourceSaver interface {
+type SourceProcessor interface {
 	Save(ctx context.Context, src models.Source) (int, error)
+	Delete(ctx context.Context, sourceID int) error
 }
 
 type SourceService struct {
-	sourceSaver SourceSaver
+	sourceProcessor SourceProcessor
 }
 
-func NewSourceService(sourceSaver SourceSaver) *SourceService {
-	return &SourceService{sourceSaver: sourceSaver}
+func NewSourceService(sourceSaver SourceProcessor) *SourceService {
+	return &SourceService{sourceProcessor: sourceSaver}
 }
 
 func (s *SourceService) Save(ctx context.Context, srcInput models.SourceInput) (int, error) {
@@ -24,5 +25,9 @@ func (s *SourceService) Save(ctx context.Context, srcInput models.SourceInput) (
 		CreatedAt: srcInput.CreatedAt,
 	}
 
-	return s.sourceSaver.Save(ctx, src)
+	return s.sourceProcessor.Save(ctx, src)
+}
+
+func (s *SourceService) Delete(ctx context.Context, sourceID int) error {
+	return s.sourceProcessor.Delete(ctx, sourceID)
 }

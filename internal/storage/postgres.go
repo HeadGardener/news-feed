@@ -20,6 +20,7 @@ var (
 		sourcesTable)
 	getSourcesQuery    = fmt.Sprintf(`SELECT * FROM %s`, sourcesTable)
 	getSourceByIDQuery = fmt.Sprintf(`SELECT * FROM %s WHERE id=$1`, sourcesTable)
+	deleteSourceQuery  = fmt.Sprintf(`DELETE FROM %s WHERE id=$1`, sourcesTable)
 )
 
 // article table queries
@@ -40,7 +41,7 @@ var (
 	getUsersForSendQuery  = fmt.Sprintf(`SELECT * FROM %s WHERE send_flag=1`, usersTable)
 	getUserWithInputQuery = fmt.Sprintf(`SELECT * FROM %s WHERE username=$1 AND email=$2 AND password_hash=$3`,
 		usersTable)
-	updateSendFlagQuery = fmt.Sprintf(`UPDATE %s SET send_flag=$1 WHERE user_id=$2`, usersTable)
+	updateSendFlagQuery = fmt.Sprintf(`UPDATE %s SET send_flag=$1 WHERE id=$2`, usersTable)
 )
 
 // favorites table queries

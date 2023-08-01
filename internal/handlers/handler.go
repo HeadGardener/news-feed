@@ -11,6 +11,7 @@ import (
 
 type SourceService interface {
 	Save(ctx context.Context, srcInput models.SourceInput) (int, error)
+	Delete(ctx context.Context, sourceID int) error
 }
 
 type ArticleService interface {
@@ -64,11 +65,12 @@ func (h *Handler) InitRoutes() http.Handler {
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.Timeout(60 * time.Second))
 
-	// add admin role and other endpoints
 	r.Route("/api", func(r chi.Router) {
 		r.Route("/sources", func(r chi.Router) {
+			r.Use(h.identifyUser)
 			r.Use(h.checkRole)
 			r.Post("/", h.addSource)
+			r.Delete("/{source_id}", h.deleteSource)
 		})
 
 		r.Route("/articles", func(r chi.Router) {
@@ -80,7 +82,7 @@ func (h *Handler) InitRoutes() http.Handler {
 			r.Post("/sign-in", h.signIn)
 			r.Route("/profile", func(r chi.Router) {
 				r.Use(h.identifyUser)
-				r.Post("/{send_flag}", h.updateSendFlag)
+				r.Put("/{send_flag}", h.updateSendFlag)
 			})
 		})
 

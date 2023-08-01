@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-const fetchInterval = 15 * time.Minute
+const fetchInterval = 30 * time.Minute
 
 var categories = []string{"go", "golang"}
 

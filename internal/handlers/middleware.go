@@ -59,7 +59,7 @@ func (h *Handler) checkRole(next http.Handler) http.Handler {
 		userAttributes, ok := userCtxValue.(models.UserAttributes)
 		if !ok {
 			newErrResponse(w, http.StatusBadRequest, "failed while parsing request context",
-				errors.New("workerCtx value is not of type WorkerAttributes"))
+				errors.New("userCtx value is not of type UserAttributes"))
 			return
 		}
 

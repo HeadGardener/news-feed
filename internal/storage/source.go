@@ -45,3 +45,11 @@ func (s *SourceStorage) SourceByID(ctx context.Context, sourceID int) (models.So
 
 	return source, nil
 }
+
+func (s *SourceStorage) Delete(ctx context.Context, sourceID int) error {
+	if _, err := s.db.ExecContext(ctx, deleteSourceQuery, sourceID); err != nil {
+		return err
+	}
+
+	return nil
+}

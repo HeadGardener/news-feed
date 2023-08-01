@@ -35,7 +35,7 @@ func (s *UserService) Create(ctx context.Context, userInput models.UserInput) (i
 }
 
 func (s *UserService) UpdateSendFlag(ctx context.Context, userID, sendFlag int) error {
-	return s.UpdateSendFlag(ctx, userID, sendFlag)
+	return s.userProcessor.UpdateSendFlag(ctx, userID, sendFlag)
 }
 
 func getPasswordHash(password string) string {
